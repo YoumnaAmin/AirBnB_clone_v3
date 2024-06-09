@@ -73,16 +73,11 @@ class FileStorage:
         """Return the OBJ based on the class and ID"""
         if cls not in classes.values():
             return None
-        return self.__session.query(cls).filter_by(id=id).first()
+        key = cls.__name__ + '.' + id
+        return self.__objects.get(key)
 
     def count(self, cls=None):
         """Return thr number of OBJ"""
         if cls:
-            if cls not in classes.values():
-                return 0
-            return self.__session.query(cls).count()
-        else:
-            total_count = 0
-            for clss in classes.values():
-                total_count += self.__session.query(clss).count()
-            return total_count
+            return len(self.all(cls))
+        return len(self.__objects)
